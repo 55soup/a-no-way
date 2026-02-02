@@ -1,8 +1,66 @@
+"use client";
+
+import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
+
 export default function HomePage() {
+  const { user, hasFamilyAccount } = useAuth();
+
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-4">메인</h1>
-      <p className="text-gray-600">메인 페이지입니다.</p>
+    <div className="flex flex-col min-h-[calc(100dvh-64px)] bg-white px-6 py-8">
+      {/* 인사말 */}
+      <h1 className="text-3xl font-bold mb-6">
+        안녕하세요, <span className="text-[#FF8D28]">{user?.name || "User"}</span> 님!
+      </h1>
+
+      {/* 메뉴 카드 그리드 */}
+      <div className="grid grid-cols-2 gap-4 mb-6">
+        {/* 피싱/스캠 진단하기 - 항상 표시 */}
+        <Link
+          href="/diagnosis"
+          className="bg-gray-100 rounded-2xl p-6 flex flex-col justify-between aspect-square hover:bg-gray-200 transition-colors"
+        >
+          <div>
+            <h2 className="text-[1.5vw] font-bold text-gray-800">피싱/스캠</h2>
+            <h2 className="text-[1.5vw] font-bold text-gray-800">진단하기</h2>
+          </div>
+          <div className="text-5xl">🔍</div>
+        </Link>
+
+        {/* 공동체 바로가기 - 항상 표시 */}
+        <Link
+          href="/community"
+          className="bg-gray-100 rounded-2xl p-6 flex flex-col justify-between aspect-square hover:bg-gray-200 transition-colors"
+        >
+          <div>
+            <h2 className="text-[1.5vw] font-bold text-gray-800">공동체</h2>
+            <h2 className="text-[1.5vw] font-bold text-gray-800">바로가기</h2>
+          </div>
+          <div className="text-5xl">🔒</div>
+        </Link>
+
+        {/* 가족연동한 경우: 가족의 A설마? (오른쪽 아래) */}
+        {hasFamilyAccount && (
+          <Link
+            href="/family"
+            className="bg-gray-100 rounded-2xl p-6 flex flex-col justify-between aspect-square hover:bg-gray-200 transition-colors col-start-2"
+          >
+            <div>
+              <h2 className="text-base font-bold text-gray-800">가족의</h2>
+              <h2 className="text-base font-bold text-gray-800">A설마?</h2>
+            </div>
+            <div className="text-5xl">🏠</div>
+          </Link>
+        )}
+      </div>
+
+      {/* 하단 회색 영역들 */}
+      <div className="flex flex-col gap-4">
+        <div className="bg-gray-200 rounded-2xl h-20"></div>
+        <div className="bg-gray-200 rounded-2xl h-20"></div>
+        <div className="bg-gray-200 rounded-2xl h-20"></div>
+        <div className="bg-gray-200 rounded-2xl h-20"></div>
+      </div>
     </div>
   );
 }

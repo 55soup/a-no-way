@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 const navItems = [
   { href: "/home", label: "메인", icon: HomeIcon },
   { href: "/diagnosis", label: "진단", icon: DiagnosisIcon },
-  { href: "/chat", label: "대화", icon: ChatIcon },
+  { href: "/community", label: "공동체", icon: CommunityIcon },
   { href: "/mypage", label: "마이", icon: MyPageIcon },
 ];
 
@@ -56,10 +56,13 @@ function DiagnosisIcon({ active }: { active: boolean }) {
   );
 }
 
-function ChatIcon({ active }: { active: boolean }) {
+function CommunityIcon({ active }: { active: boolean }) {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={active ? "#FF8C00" : "#6B7280"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
     </svg>
   );
 }
