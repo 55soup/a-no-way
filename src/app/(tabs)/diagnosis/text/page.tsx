@@ -3,23 +3,64 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function TextDiagnosisPage() {
   const router = useRouter();
   const [text, setText] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleAnalyze = async () => {
     if (!text.trim()) return;
 
     setIsAnalyzing(true);
-    // Mock analysis - 실제로는 API 호출
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsAnalyzing(false);
+    setError(null);
 
-    // Navigate to result page with mock result
-    router.push("/diagnosis/result?type=text&status=warning");
+    try {
+      const response = await fetch("/api/analyze/text", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text }),
+      });
+
+      if (!response.ok) {
+        throw new Error("분석 요청에 실패했습니다");
+      }
+
+      const result = await response.json();
+
+      // 결과를 sessionStorage에 저장하고 결과 페이지로 이동
+      sessionStorage.setItem("diagnosisResult", JSON.stringify(result));
+      sessionStorage.setItem("diagnosisType", "text");
+      router.push("/diagnosis/result");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "분석 중 오류가 발생했습니다");
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
+
+  if (isAnalyzing) {
+    return (
+      <div className="flex flex-col min-h-[calc(100dvh-64px)] bg-white">
+        <div className="flex-1 flex flex-col items-center justify-center gap-6">
+          <Image
+            src="/logo.png"
+            alt="A설마? 로고"
+            width={200}
+            height={100}
+            priority
+          />
+          <LoadingSpinner className="w-8 h-8" />
+          <p className="text-gray-500 text-sm">AI가 문자를 분석하고 있어요...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-[calc(100dvh-64px)] bg-white">
@@ -45,6 +86,12 @@ export default function TextDiagnosisPage() {
           />
         </div>
 
+        {error && (
+          <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
+            {error}
+          </div>
+        )}
+
         <div className="mt-4">
           <p className="text-xs text-gray-400 mb-4 text-center">
             입력하신 내용은 AI가 분석하여 피싱/스캠 여부를 판단합니다
@@ -54,7 +101,7 @@ export default function TextDiagnosisPage() {
             disabled={!text.trim() || isAnalyzing}
             className="w-full py-4 bg-[#FF8C00] hover:bg-[#E67E00] disabled:bg-gray-300 text-white font-semibold rounded-xl transition-colors"
           >
-            {isAnalyzing ? "분석 중..." : "분석 요청하기"}
+            {isAnalyzing ? "AI가 분석 중..." : "분석 요청하기"}
           </button>
         </div>
       </div>
