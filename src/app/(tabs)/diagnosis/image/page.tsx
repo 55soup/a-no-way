@@ -3,12 +3,15 @@
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function ImageDiagnosisPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -16,6 +19,7 @@ export default function ImageDiagnosisPage() {
       const reader = new FileReader();
       reader.onloadend = () => {
         setSelectedImage(reader.result as string);
+        setError(null);
       };
       reader.readAsDataURL(file);
     }
@@ -25,24 +29,72 @@ export default function ImageDiagnosisPage() {
     if (!selectedImage) return;
 
     setIsAnalyzing(true);
-    // Mock analysis - 실제로는 API 호출
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    setIsAnalyzing(false);
+    setError(null);
 
-    // Navigate to result page with mock result
-    router.push("/diagnosis/result?type=image&status=danger");
+    try {
+      const response = await fetch("/api/analyze/image", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ image: selectedImage }),
+      });
+
+      if (!response.ok) {
+        throw new Error("분석 요청에 실패했습니다");
+      }
+
+      const result = await response.json();
+
+      // 결과를 sessionStorage에 저장하고 결과 페이지로 이동
+      sessionStorage.setItem("diagnosisResult", JSON.stringify(result));
+      sessionStorage.setItem("diagnosisType", "image");
+      sessionStorage.setItem("diagnosisImage", selectedImage);
+      router.push("/diagnosis/result");
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "분석 중 오류가 발생했습니다",
+      );
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
+
+  if (isAnalyzing) {
+    return (
+      <div className="flex flex-col min-h-[calc(100dvh-64px)] bg-white">
+        <div className="flex-1 flex flex-col items-center justify-center gap-6">
+          <Image
+            src="/logo.png"
+            alt="A설마? 로고"
+            width={200}
+            height={100}
+            priority
+          />
+          <LoadingSpinner className="w-8 h-8" />
+          <p className="text-gray-500 text-sm">
+            A설마가 똑똑하게 진단 중이에요.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-[calc(100dvh-64px)] bg-white">
       <div className="p-6 border-b border-gray-100">
         <div className="flex items-center gap-3">
-          <Link href="/diagnosis" className="p-2 -ml-2 hover:bg-gray-100 rounded-lg">
+          <Link
+            href="/diagnosis"
+            className="p-2 -ml-2 hover:bg-gray-100 rounded-lg"
+          >
             <BackIcon />
           </Link>
           <div>
             <h1 className="text-xl font-bold text-gray-900">이미지 검사</h1>
-            <p className="text-sm text-gray-500">의심 이미지를 업로드해 주세요</p>
+            <p className="text-sm text-gray-500">
+              의심 이미지를 업로드해 주세요
+            </p>
           </div>
         </div>
       </div>
@@ -68,7 +120,9 @@ export default function ImageDiagnosisPage() {
               </div>
               <div className="text-center">
                 <p className="font-semibold text-gray-900">이미지 업로드</p>
-                <p className="text-sm text-gray-500 mt-1">갤러리에서 선택하거나 촬영</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  갤러리에서 선택하거나 촬영
+                </p>
               </div>
             </button>
           </div>
@@ -88,12 +142,18 @@ export default function ImageDiagnosisPage() {
               </button>
             </div>
 
+            {error && (
+              <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
+                {error}
+              </div>
+            )}
+
             <button
               onClick={handleAnalyze}
               disabled={isAnalyzing}
               className="w-full py-4 bg-[#FF8C00] hover:bg-[#E67E00] disabled:bg-gray-300 text-white font-semibold rounded-xl transition-colors"
             >
-              {isAnalyzing ? "분석 중..." : "분석 요청하기"}
+              {isAnalyzing ? "AI가 분석 중..." : "분석 요청하기"}
             </button>
           </div>
         )}
@@ -104,7 +164,16 @@ export default function ImageDiagnosisPage() {
 
 function BackIcon() {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#374151" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#374151"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <polyline points="15 18 9 12 15 6" />
     </svg>
   );
@@ -112,7 +181,16 @@ function BackIcon() {
 
 function UploadIcon() {
   return (
-    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#FF8C00" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width="32"
+      height="32"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#FF8C00"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
       <polyline points="17 8 12 3 7 8" />
       <line x1="12" y1="3" x2="12" y2="15" />
@@ -122,7 +200,16 @@ function UploadIcon() {
 
 function CloseIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="white"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <line x1="18" y1="6" x2="6" y2="18" />
       <line x1="6" y1="6" x2="18" y2="18" />
     </svg>
