@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function HomePage() {
@@ -10,7 +11,8 @@ export default function HomePage() {
     <div className="flex flex-col min-h-[calc(100dvh-64px)] bg-white px-6 py-8">
       {/* 인사말 */}
       <h1 className="text-3xl font-bold mb-6">
-        안녕하세요, <span className="text-[#FF8D28]">{user?.name || "User"}</span> 님!
+        안녕하세요,{" "}
+        <span className="text-[#FF8D28]">{user?.name || "User"}</span> 님!
       </h1>
 
       {/* 메뉴 카드 그리드 */}
@@ -24,7 +26,7 @@ export default function HomePage() {
             <h2 className="text-[1.5vw] font-bold text-gray-800">피싱/스캠</h2>
             <h2 className="text-[1.5vw] font-bold text-gray-800">진단하기</h2>
           </div>
-          <div className="text-5xl">🔍</div>
+          <Image src="/home/lens.svg" alt="진단" width={48} height={48} />
         </Link>
 
         {/* 공동체 바로가기 - 항상 표시 */}
@@ -36,7 +38,7 @@ export default function HomePage() {
             <h2 className="text-[1.5vw] font-bold text-gray-800">공동체</h2>
             <h2 className="text-[1.5vw] font-bold text-gray-800">바로가기</h2>
           </div>
-          <div className="text-5xl">🔒</div>
+          <Image src="/home/lock.svg" alt="공동체" width={48} height={48} />
         </Link>
 
         {/* 가족연동한 경우: 가족의 A설마? (오른쪽 아래) */}
@@ -49,7 +51,7 @@ export default function HomePage() {
               <h2 className="text-base font-bold text-gray-800">가족의</h2>
               <h2 className="text-base font-bold text-gray-800">A설마?</h2>
             </div>
-            <div className="text-5xl">🏠</div>
+            <Image src="/home/home.svg" alt="가족" width={48} height={48} />
           </Link>
         )}
       </div>
