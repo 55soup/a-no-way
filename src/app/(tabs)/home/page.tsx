@@ -23,8 +23,8 @@ export default function HomePage() {
           className="bg-gray-100 rounded-2xl p-6 flex flex-col justify-between aspect-square hover:bg-gray-200 transition-colors"
         >
           <div>
-            <h2 className="text-[1.5vw] font-bold text-gray-800">피싱/스캠</h2>
-            <h2 className="text-[1.5vw] font-bold text-gray-800">진단하기</h2>
+            <h2 className="text-base sm:text-lg md:text-xl font-bold text-gray-800">피싱/스캠</h2>
+            <h2 className="text-base sm:text-lg md:text-xl font-bold text-gray-800">진단하기</h2>
           </div>
           <Image src="/home/lens.svg" alt="진단" width={48} height={48} />
         </Link>
@@ -35,8 +35,8 @@ export default function HomePage() {
           className="bg-gray-100 rounded-2xl p-6 flex flex-col justify-between aspect-square hover:bg-gray-200 transition-colors"
         >
           <div>
-            <h2 className="text-[1.5vw] font-bold text-gray-800">공동체</h2>
-            <h2 className="text-[1.5vw] font-bold text-gray-800">바로가기</h2>
+            <h2 className="text-base sm:text-lg md:text-xl font-bold text-gray-800">공동체</h2>
+            <h2 className="text-base sm:text-lg md:text-xl font-bold text-gray-800">바로가기</h2>
           </div>
           <Image src="/home/lock.svg" alt="공동체" width={48} height={48} />
         </Link>
