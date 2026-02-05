@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 
 export default function DiagnosisPage() {
   return (
@@ -20,7 +21,7 @@ export default function DiagnosisPage() {
             <h2 className="text-xl font-bold text-gray-800">검사하기</h2>
           </div>
           <div className="flex justify-end">
-            <div className="text-6xl">🔒</div>
+            <Image src="/home/lock.svg" alt="공동체" width={48} height={48} />
           </div>
         </Link>
 
@@ -34,7 +35,7 @@ export default function DiagnosisPage() {
             <h2 className="text-xl font-bold text-gray-800">검사하기</h2>
           </div>
           <div className="flex justify-end">
-            <div className="text-6xl">🔍</div>
+            <Image src="/home/lens.svg" alt="진단" width={48} height={48} />
           </div>
         </Link>
       </div>
@@ -44,8 +45,19 @@ export default function DiagnosisPage() {
         href="/diagnosis/history"
         className="bg-gray-100 rounded-2xl px-6 py-4 flex items-center justify-between hover:bg-gray-200 transition-colors"
       >
-        <span className="text-lg font-semibold text-gray-800">진단 기록 보기</span>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <span className="text-lg font-semibold text-gray-800">
+          진단 기록 보기
+        </span>
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
           <polyline points="9 18 15 12 9 6" />
         </svg>
       </Link>
