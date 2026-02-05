@@ -3,13 +3,13 @@ import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 
 export const metadata: Metadata = {
-  title: "A얼마?",
-  description: "A얼마? 서비스",
+  title: "A설마?",
+  description: "A설마? 서비스",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "A얼마?",
+    title: "A설마?",
   },
   formatDetection: {
     telephone: false,
@@ -37,9 +37,7 @@ export default function RootLayout({
     <html lang="ko">
       <body className="antialiased">
         <AuthProvider>
-          <div className="mobile-container">
-            {children}
-          </div>
+          <div className="mobile-container">{children}</div>
         </AuthProvider>
       </body>
     </html>

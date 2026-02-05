@@ -1,7 +1,7 @@
 {
-  "name": "A얼마?",
-  "short_name": "A얼마?",
-  "description": "A얼마? 서비스",
+  "name": "A설마?",
+  "short_name": "A설마?",
+  "description": "A설마? 서비스",
   "start_url": "/home",
   "display": "standalone",
   "background_color": "#ffffff",

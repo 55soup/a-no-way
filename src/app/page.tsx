@@ -21,7 +21,7 @@ export default function SplashPage() {
       <div className="flex-1 flex flex-col items-center justify-center gap-6">
         <Image
           src="/logo.png"
-          alt="A얼마? 로고"
+          alt="A설마? 로고"
           width={200}
           height={100}
           priority
@@ -34,7 +34,7 @@ export default function SplashPage() {
           <p className="text-sm text-gray-700 leading-relaxed">
             최근 쿠팡 체험단 사기 전화가 늘었어요. 😓
             <br />
-            의심되면 바로 A얼마?에 검증하세요!
+            의심되면 바로 A설마?에 검증하세요!
           </p>
         </div>
 
