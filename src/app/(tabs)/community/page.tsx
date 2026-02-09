@@ -101,47 +101,50 @@ export default function CommunityPage() {
       <div className="flex-1 p-4">
         <div className="flex flex-col gap-3">
           {posts.map((post) => (
-            <article
+            <Link
               key={post.id}
-              className="bg-white rounded-xl p-4 border border-gray-100"
+              href={`/community/${post.id}`}
+              className="block"
             >
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
-                  <span className="text-sm">👤</span>
-                </div>
-                <span className="font-medium text-gray-900 text-sm">
-                  {post.author}
-                </span>
-                <span className="text-xs text-gray-400">{post.date}</span>
-              </div>
-
-              <h3 className="font-semibold text-gray-900 mb-1">{post.title}</h3>
-              <p className="text-sm text-gray-600 line-clamp-2 mb-3">
-                {post.content}
-              </p>
-
-              <div className="flex flex-wrap gap-2 mb-3">
-                {post.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md"
-                  >
-                    #{tag}
+              <article className="bg-white rounded-xl p-4 border border-gray-100 hover:border-orange-200 transition-colors">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                    <span className="text-sm">👤</span>
+                  </div>
+                  <span className="font-medium text-gray-900 text-sm">
+                    {post.author}
                   </span>
-                ))}
-              </div>
+                  <span className="text-xs text-gray-400">{post.date}</span>
+                </div>
 
-              <div className="flex items-center gap-4 text-gray-500 text-sm">
-                <button className="flex items-center gap-1 hover:text-[#FF8C00] transition-colors">
-                  <HeartIcon />
-                  <span>{post.likes}</span>
-                </button>
-                <button className="flex items-center gap-1 hover:text-[#FF8C00] transition-colors">
-                  <CommentIcon />
-                  <span>{post.comments}</span>
-                </button>
-              </div>
-            </article>
+                <h3 className="font-semibold text-gray-900 mb-1">{post.title}</h3>
+                <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+                  {post.content}
+                </p>
+
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {post.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-md"
+                    >
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-4 text-gray-500 text-sm">
+                  <span className="flex items-center gap-1">
+                    <HeartIcon />
+                    <span>{post.likes}</span>
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <CommentIcon />
+                    <span>{post.comments}</span>
+                  </span>
+                </div>
+              </article>
+            </Link>
           ))}
         </div>
       </div>
