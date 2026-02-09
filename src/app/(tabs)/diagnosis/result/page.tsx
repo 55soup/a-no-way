@@ -81,6 +81,18 @@ export default function DiagnosisResultPage() {
     return `${now.getFullYear()}년 ${now.getMonth() + 1}월 ${now.getDate()}일 ${now.getHours() >= 12 ? "오후" : "오전"} ${now.getHours() % 12 || 12}시 ${now.getMinutes()}분`;
   });
 
+  const handleShareToCommunity = () => {
+    if (result) {
+      sessionStorage.setItem("sharedDiagnosis", JSON.stringify({
+        result,
+        diagnosisType,
+        diagnosisImage,
+        sharedAt: new Date().toISOString(),
+      }));
+      router.push("/community/write");
+    }
+  };
+
   useEffect(() => {
     if (!result) {
       router.push("/diagnosis");
@@ -255,7 +267,10 @@ export default function DiagnosisResultPage() {
             <button className="flex-1 py-3 bg-[#FF8C00] text-white font-semibold rounded-xl hover:bg-[#E67E00] transition-colors">
               가족에게 공유하기
             </button>
-            <button className="flex-1 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors">
+            <button
+              onClick={handleShareToCommunity}
+              className="flex-1 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors"
+            >
               공동체에 공유하기
             </button>
           </div>

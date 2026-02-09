@@ -1,13 +1,44 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+
+interface SharedDiagnosis {
+  result: {
+    status: "danger" | "warning" | "safe";
+    riskLevel: number;
+    diagnosis: {
+      title: string;
+      summary: string;
+      details: string[];
+    };
+    response: {
+      immediate: string[];
+      preventive: string[];
+    };
+    similarScams: {
+      name: string;
+      description: string;
+    }[];
+  };
+  diagnosisType: string;
+  diagnosisImage: string | null;
+  sharedAt: string;
+}
 
 export default function WritePage() {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [shareResult, setShareResult] = useState(true);
+  const [sharedDiagnosis, setSharedDiagnosis] = useState<SharedDiagnosis | null>(null);
+
+  useEffect(() => {
+    const stored = sessionStorage.getItem("sharedDiagnosis");
+    if (stored) {
+      setSharedDiagnosis(JSON.parse(stored));
+    }
+  }, []);
 
   const handleSubmit = () => {
     if (!title.trim() || !content.trim()) {
@@ -19,6 +50,18 @@ export default function WritePage() {
     const existingPosts = JSON.parse(
       localStorage.getItem("community_posts") || "[]"
     );
+
+    // 진단결과를 상세페이지 형식으로 변환
+    const convertedDiagnosisResult = shareResult && sharedDiagnosis ? {
+      type: sharedDiagnosis.result.diagnosis.title,
+      description: sharedDiagnosis.result.diagnosis.summary,
+      responses: [
+        ...sharedDiagnosis.result.response.immediate,
+        ...sharedDiagnosis.result.response.preventive,
+      ],
+      similarCases: sharedDiagnosis.result.similarScams.map(s => s.name),
+      image: sharedDiagnosis.diagnosisImage,
+    } : null;
 
     // 새 게시글 생성
     const newPost = {
@@ -32,6 +75,7 @@ export default function WritePage() {
       tags: [],
       shareResult,
       createdAt: new Date().toISOString(),
+      diagnosisResult: convertedDiagnosisResult,
     };
 
     // 새 게시글을 맨 앞에 추가하고 저장
@@ -39,6 +83,9 @@ export default function WritePage() {
       "community_posts",
       JSON.stringify([newPost, ...existingPosts])
     );
+
+    // 공유된 진단결과 세션 삭제
+    sessionStorage.removeItem("sharedDiagnosis");
 
     router.push("/community");
   };

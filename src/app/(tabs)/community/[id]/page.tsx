@@ -78,6 +78,7 @@ type Post = {
     description: string;
     responses: string[];
     similarCases: string[];
+    image?: string | null;
   } | null;
 };
 
@@ -180,6 +181,17 @@ export default function PostDetailPage() {
         {/* Diagnosis Result Section */}
         {post.diagnosisResult && showDiagnosis && (
           <div className="mt-2">
+            {/* Diagnosis Image */}
+            {post.diagnosisResult.image && (
+              <div className="mx-4 mb-3 bg-gray-100 rounded-xl overflow-hidden">
+                <img
+                  src={post.diagnosisResult.image}
+                  alt="진단한 이미지"
+                  className="w-full h-auto max-h-[200px] object-contain"
+                />
+              </div>
+            )}
+
             {/* Danger Alert */}
             <div className="mx-4 bg-red-50 border border-red-200 rounded-xl p-4 mb-3">
               <div className="flex items-center gap-2 mb-2">
