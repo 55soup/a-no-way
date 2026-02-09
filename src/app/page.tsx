@@ -2,11 +2,18 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import LoadingSpinner from "@/components/LoadingSpinner";
+
+const messages = [
+  "최근 쿠팡 체험단 사기 전화가 늘었어요. 😓\n의심되면 바로 A설마?에 검증하세요!",
+  "의심되면 무조건 A설마에서 검증하세요.",
+  "A설마 피싱/스캠 진단결과를 가족에게 공유할 수 있어요.",
+];
 
 export default function SplashPage() {
   const router = useRouter();
+  const [messageIndex, setMessageIndex] = useState(0);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -15,6 +22,14 @@ export default function SplashPage() {
 
     return () => clearTimeout(timer);
   }, [router]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMessageIndex((prev) => (prev + 1) % messages.length);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-between min-h-dvh bg-white py-12">
@@ -30,13 +45,12 @@ export default function SplashPage() {
       </div>
 
       <div className="flex flex-col items-center gap-6 px-6">
-        <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 text-center">
-          <p className="text-sm text-gray-700 leading-relaxed">
-            최근 쿠팡 체험단 사기 전화가 늘었어요. 😓
-            <br />
-            의심되면 바로 A설마?에 검증하세요!
-          </p>
-        </div>
+        <p
+          key={messageIndex}
+          className="text-sm text-gray-700 leading-relaxed whitespace-pre-line text-center min-h-[48px] animate-slide-fade-in"
+        >
+          {messages[messageIndex]}
+        </p>
 
         <p className="text-xs text-gray-400">TEAM 꾸무꾸</p>
       </div>
