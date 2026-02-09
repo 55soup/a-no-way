@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -41,9 +41,30 @@ const mockPosts = [
   },
 ];
 
+type Post = {
+  id: string;
+  author: string;
+  date: string;
+  title: string;
+  content: string;
+  likes: number;
+  comments: number;
+  tags: string[];
+};
+
 export default function CommunityPage() {
   const { isLoggedIn } = useAuth();
   const [activeTab, setActiveTab] = useState<"all" | "popular">("all");
+  const [posts, setPosts] = useState<Post[]>(mockPosts);
+
+  useEffect(() => {
+    // localStorage에서 사용자 게시글 불러오기
+    const savedPosts = localStorage.getItem("community_posts");
+    if (savedPosts) {
+      const userPosts = JSON.parse(savedPosts) as Post[];
+      setPosts([...userPosts, ...mockPosts]);
+    }
+  }, []);
 
   return (
     <div className="flex flex-col min-h-[calc(100dvh-64px)] bg-gray-50">
@@ -79,7 +100,7 @@ export default function CommunityPage() {
 
       <div className="flex-1 p-4">
         <div className="flex flex-col gap-3">
-          {mockPosts.map((post) => (
+          {posts.map((post) => (
             <article
               key={post.id}
               className="bg-white rounded-xl p-4 border border-gray-100"
@@ -126,9 +147,12 @@ export default function CommunityPage() {
       </div>
 
       {isLoggedIn && (
-        <button className="fixed bottom-20 right-4 w-14 h-14 bg-[#FF8C00] hover:bg-[#E67E00] text-white rounded-full shadow-lg flex items-center justify-center transition-colors">
+        <Link
+          href="/community/write"
+          className="fixed bottom-20 right-4 w-14 h-14 bg-[#FF8C00] hover:bg-[#E67E00] text-white rounded-full shadow-lg flex items-center justify-center transition-colors"
+        >
           <PlusIcon />
-        </button>
+        </Link>
       )}
 
       {!isLoggedIn && (
