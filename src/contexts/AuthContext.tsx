@@ -1,32 +1,54 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+
+const FAMILY_STORAGE_KEY = "family_accounts";
+
+interface FamilyAccount {
+  id: string;
+  nickname: string;
+}
 
 interface User {
   id: string;
   email: string;
   name: string;
-  familyAccounts?: string[];
+  familyAccounts?: FamilyAccount[];
 }
 
 interface AuthContextType {
   user: User | null;
   isLoggedIn: boolean;
   hasFamilyAccount: boolean;
+  familyAccounts: FamilyAccount[];
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   socialLogin: (provider: "kakao" | "naver" | "google") => Promise<boolean>;
   signup: (email: string, password: string, name: string) => Promise<boolean>;
-  addFamilyAccount: (familyCode: string) => Promise<boolean>;
+  addFamilyAccount: (id: string, nickname: string) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [familyAccounts, setFamilyAccounts] = useState<FamilyAccount[]>([]);
 
   const isLoggedIn = user !== null;
-  const hasFamilyAccount = (user?.familyAccounts?.length ?? 0) > 0;
+  const hasFamilyAccount = familyAccounts.length > 0;
+
+  // localStorage에서 가족 계정 불러오기
+  useEffect(() => {
+    const stored = localStorage.getItem(FAMILY_STORAGE_KEY);
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        setFamilyAccounts(parsed);
+      } catch {
+        // 파싱 실패 시 무시
+      }
+    }
+  }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     // Mock login - 실제로는 API 호출
@@ -71,13 +93,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return false;
   };
 
-  const addFamilyAccount = async (familyCode: string): Promise<boolean> => {
-    // Mock family account registration
-    if (user && familyCode) {
-      setUser({
-        ...user,
-        familyAccounts: [...(user.familyAccounts || []), familyCode],
-      });
+  const addFamilyAccount = async (id: string, nickname: string): Promise<boolean> => {
+    if (id && nickname) {
+      const newFamilyAccount: FamilyAccount = { id, nickname };
+      const newFamilyAccounts = [...familyAccounts, newFamilyAccount];
+      setFamilyAccounts(newFamilyAccounts);
+      localStorage.setItem(FAMILY_STORAGE_KEY, JSON.stringify(newFamilyAccounts));
       return true;
     }
     return false;
@@ -89,6 +110,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         isLoggedIn,
         hasFamilyAccount,
+        familyAccounts,
         login,
         logout,
         socialLogin,

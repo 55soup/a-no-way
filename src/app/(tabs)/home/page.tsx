@@ -57,7 +57,7 @@ export default function HomePage() {
           >
             <div>
               <h2 className="text-base font-bold text-gray-800">가족의</h2>
-              <h2 className="text-base font-bold text-gray-800">A설마?</h2>
+              <h2 className="text-base font-bold text-gray-800">A설마</h2>
             </div>
             <Image src="/home/home.svg" alt="가족" width={48} height={48} />
           </Link>

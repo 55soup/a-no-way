@@ -5,14 +5,16 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function MyPage() {
-  const { user, isLoggedIn, hasFamilyAccount, logout, addFamilyAccount } = useAuth();
-  const [familyCode, setFamilyCode] = useState("");
+  const { user, isLoggedIn, hasFamilyAccount, familyAccounts, logout, addFamilyAccount } = useAuth();
+  const [familyId, setFamilyId] = useState("");
+  const [familyNickname, setFamilyNickname] = useState("");
   const [showFamilyInput, setShowFamilyInput] = useState(false);
 
   const handleAddFamily = async () => {
-    if (familyCode.trim()) {
-      await addFamilyAccount(familyCode);
-      setFamilyCode("");
+    if (familyId.trim() && familyNickname.trim()) {
+      await addFamilyAccount(familyId, familyNickname);
+      setFamilyId("");
+      setFamilyNickname("");
       setShowFamilyInput(false);
     }
   };
@@ -67,15 +69,38 @@ export default function MyPage() {
             </div>
 
             {showFamilyInput && (
-              <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                <input
-                  type="text"
-                  value={familyCode}
-                  onChange={(e) => setFamilyCode(e.target.value)}
-                  placeholder="가족 코드를 입력하세요"
-                  className="w-full p-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#FF8C00]"
-                />
-                <div className="flex gap-2 mt-2">
+              <div className="mb-4 p-3 bg-gray-50 rounded-lg space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    이메일 또는 아이디
+                  </label>
+                  <input
+                    type="text"
+                    value={familyId}
+                    onChange={(e) => setFamilyId(e.target.value)}
+                    placeholder="example@email.com 또는 user123"
+                    className="w-full p-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#FF8C00]"
+                  />
+                  <p className="text-xs text-gray-400 mt-1">
+                    상대방이 가입한 이메일 또는 아이디를 정확히 입력해주세요.
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    별명
+                  </label>
+                  <input
+                    type="text"
+                    value={familyNickname}
+                    onChange={(e) => setFamilyNickname(e.target.value)}
+                    placeholder="예: 엄마, 아빠, 할머니"
+                    className="w-full p-3 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-[#FF8C00]"
+                  />
+                  <p className="text-xs text-gray-400 mt-1">
+                    가족 목록에서 표시될 별명을 입력해주세요.
+                  </p>
+                </div>
+                <div className="flex gap-2">
                   <button
                     onClick={handleAddFamily}
                     className="flex-1 py-2 bg-[#FF8C00] text-white text-sm font-medium rounded-lg"
@@ -85,7 +110,8 @@ export default function MyPage() {
                   <button
                     onClick={() => {
                       setShowFamilyInput(false);
-                      setFamilyCode("");
+                      setFamilyId("");
+                      setFamilyNickname("");
                     }}
                     className="flex-1 py-2 bg-gray-200 text-gray-700 text-sm font-medium rounded-lg"
                   >
@@ -97,17 +123,17 @@ export default function MyPage() {
 
             {hasFamilyAccount ? (
               <div className="space-y-3">
-                {user?.familyAccounts?.map((code, index) => (
+                {familyAccounts.map((family) => (
                   <div
-                    key={code}
+                    key={family.id}
                     className="flex items-center gap-3 p-3 bg-orange-50 rounded-lg"
                   >
                     <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
                       <span>👨‍👩‍👧</span>
                     </div>
                     <div className="flex-1">
-                      <p className="font-medium text-gray-900">가족 {index + 1}</p>
-                      <p className="text-xs text-gray-500">코드: {code}</p>
+                      <p className="font-medium text-gray-900">{family.nickname}</p>
+                      <p className="text-xs text-gray-500">{family.id}</p>
                     </div>
                   </div>
                 ))}
